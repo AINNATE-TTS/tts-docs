@@ -7,7 +7,7 @@ const { header } = useAppConfig();
 const staticLogo = ref(false);
 onMounted(() => {
   if (process.client) {
-    setInterval(() => {
+    setTimeout(() => {
       staticLogo.value = !staticLogo.value;
     }, 3000);
   }
@@ -15,7 +15,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <UHeader>
+  <UHeader @mouseenter="staticLogo = false" @mouseleave="staticLogo = true">
     <template #logo>
       <template v-if="header?.logo?.dark || header?.logo?.light">
         <UColorModeImage v-bind="{ class: 'h-6 w-auto', ...header?.logo }" />
