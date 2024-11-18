@@ -101,7 +101,13 @@ pipeline {
                 ]) { 
                     sh 'cat ./.env'
                 }
-                echo "Update Backend TTS Service Profiles Done!!!!"
+                configFileProvider([
+                    configFile(fileId: "cloudflare-pages-tts-${ENV_CODE}-profile", 
+                    targetLocation: './.cloudflare-pages.credentials')
+                ]) {
+                    sh 'cat ./.cloudflare-pages.credentials'
+                }
+                echo "Update Frontend Docs TTS Service Profiles Done!!!!"
             }
         }
         stage('Build and Deploy'){
@@ -121,39 +127,12 @@ pipeline {
                     def now = new Date()
                     def dateTag = now.format("yyyy_MM_dd_HHmmss")
                     env.IMAGE_TAG = "${SHORT_COMMIT}_${env.BRANCH_NAME}_${dateTag}"
-                    sh "source .env"
-                    sh "docker buildx build -e CLOUDFLARE_ACCOUNT_ID=${CLOUDFLARE_ACCOUNT_ID} -e CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN} -t local/${PAGES_PROJECT_NAME}-${ENV_CODE}-service:${IMAGE_TAG} -f Dockerfile ."
-	                sh "docker run --rm local/${PAGES_PROJECT_NAME}-${ENV_CODE}-service:${IMAGE_TAG} wrangler pages deploy dist --project-name=${PAGES_PROJECT_NAME}-${ENV_CODE}"
+                    load './.cloudflare-pages.credentials'
+                    sh "docker buildx build -t local/${PAGES_PROJECT_NAME}-${ENV_CODE}-service:${IMAGE_TAG} -f Dockerfile ."
+	                sh "docker run --rm -e CLOUDFLARE_ACCOUNT_ID=${env.CLOUDFLARE_ACCOUNT_ID} -e CLOUDFLARE_API_TOKEN=${env.CLOUDFLARE_API_TOKEN} local/${PAGES_PROJECT_NAME}-${ENV_CODE}-service:${IMAGE_TAG} wrangler pages deploy dist --project-name=${PAGES_PROJECT_NAME}-${ENV_CODE}"
+                    sh "docker rmi local/${PAGES_PROJECT_NAME}-${ENV_CODE}-service:${IMAGE_TAG}"
                 }
                 echo "Image tag: ${env.IMAGE_TAG}"
-            }
-        }
-
-
-        stage('Deploy') {
-            when {
-                anyOf{
-                    changeset "**"
-                    expression { params.BUILD_MANUAL == 'frontend-docs-tts' }
-                }
-                anyOf {
-                    branch 'develop'
-                    branch 'main'
-                }
-            }
-            environment {
-                GIT_PROTOCOL = 'https'
-                GIT_CONFIG_URI = "github.com/AINNATE-TTS/ttsopeai-chart.git"
-                GIT_CREDS = "tran.van.cong"
-
-            }
-            steps {
-                configFileProvider([configFile(fileId: 'patchTagImages-tts', targetLocation: '/tmp/patchTagImages.sh')]) {
-                    withCredentials([usernamePassword(credentialsId: GIT_CREDS, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]){
-                        sh "chmod +x /tmp/patchTagImages.sh"
-                        sh "/tmp/patchTagImages.sh"
-                    }
-                }
             }
         }
     }
