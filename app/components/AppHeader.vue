@@ -4,6 +4,14 @@ import type { NavItem } from "@nuxt/content";
 const navigation = inject<NavItem[]>("navigation", []);
 
 const { header } = useAppConfig();
+const staticLogo = ref(false);
+onMounted(() => {
+  if (process.client) {
+    setInterval(() => {
+      staticLogo.value = !staticLogo.value;
+    }, 3000);
+  }
+});
 </script>
 
 <template>
@@ -15,7 +23,7 @@ const { header } = useAppConfig();
       <template v-else>
         <div class="inline-flex items-center gap-2">
           <BaseSoundWave
-            :static="true"
+            :static="staticLogo"
             class="cursor-pointer"
             @click="navigateTo('/docs/api-reference/getting-started')"
           />
