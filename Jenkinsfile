@@ -121,8 +121,8 @@ pipeline {
                     def now = new Date()
                     def dateTag = now.format("yyyy_MM_dd_HHmmss")
                     env.IMAGE_TAG = "${SHORT_COMMIT}_${env.BRANCH_NAME}_${dateTag}"
-                    sh "source .env"
-                    sh "docker buildx build -e CLOUDFLARE_ACCOUNT_ID=${CLOUDFLARE_ACCOUNT_ID} -e CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN} -t local/${PAGES_PROJECT_NAME}-${ENV_CODE}-service:${IMAGE_TAG} -f Dockerfile ."
+                    sh ". ./.env"
+                    sh "docker buildx build --build-arg CLOUDFLARE_ACCOUNT_ID=${CLOUDFLARE_ACCOUNT_ID} --build-arg CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN} -t local/${PAGES_PROJECT_NAME}-${ENV_CODE}-service:${IMAGE_TAG} -f Dockerfile ."
 	                sh "docker run --rm local/${PAGES_PROJECT_NAME}-${ENV_CODE}-service:${IMAGE_TAG} wrangler pages deploy dist --project-name=${PAGES_PROJECT_NAME}-${ENV_CODE}"
                 }
                 echo "Image tag: ${env.IMAGE_TAG}"
