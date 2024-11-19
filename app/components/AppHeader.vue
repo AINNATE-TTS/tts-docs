@@ -21,13 +21,15 @@ onMounted(() => {
         <UColorModeImage v-bind="{ class: 'h-6 w-auto', ...header?.logo }" />
       </template>
       <template v-else>
-        <div class="inline-flex items-center gap-2">
+        <div class="flex flex-row items-center gap-2">
           <BaseSoundWave
             :static="staticLogo"
             class="cursor-pointer"
             @click="navigateTo('/docs/api-reference/getting-started')"
           />
-          Text To Speech OpenAI <UBadge label="Docs" variant="subtle" class="mb-0.5" />
+          <span class="block md:hidden">TTSOpenAI</span>
+          <span class="hidden md:block">Text To Speech OpenAI</span>
+          <UBadge label="Docs" variant="subtle" />
         </div>
       </template>
     </template>

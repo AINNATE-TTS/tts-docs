@@ -18,7 +18,7 @@ hero:
       to: https://ttsopenai.com/
       target: _blank
   code: |
-    ```bash [Terminal]
+    ```bash [terminal]
     curl -X POST https://api.ttsopenai.com/uapi/v1/text-to-speech \
       -H "Content-Type: application/json" \
       -H "x-api-key: <your api key>" \
