@@ -12,7 +12,7 @@ WORKDIR /src
 FROM base as build
 
 RUN npm install -g pnpm wrangler
-COPY --link package.json package-lock.json pnpm-lock.yaml ./
+COPY --link package.json pnpm-lock.yaml ./
 RUN npm install \
   && pnpm install
 
