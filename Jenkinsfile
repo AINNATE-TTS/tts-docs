@@ -116,10 +116,18 @@ pipeline {
                 }
             }
             steps {
-                script {
-                    env.ENV_CODE = getEnvCode(env.BRANCH_NAME)
-                    sh "cp deployment/group_vars/${env.ENV_CODE}.yml deployment/group_vars/all.yml"
-                    sh "ansible-playbook --connection=local --inventory 127.0.0.1, deployment/playbook.yml --extra-vars application_path=${env.WORKSPACE}"
+                withCredentials([[
+                $class: 'AmazonWebServicesCredentialsBinding',
+                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+                credentialsId: 'cicd-deployment']]) {
+                    script {
+                        env.ENV_CODE = getEnvCode(env.BRANCH_NAME)
+                        sh 'aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID'
+                        sh 'aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY'
+                        sh "cp deployment/group_vars/${env.ENV_CODE}.yml deployment/group_vars/all.yml"
+                        sh "ansible-playbook --connection=local --inventory 127.0.0.1, deployment/playbook.yml --extra-vars application_path=${env.WORKSPACE}"
+                    }
                 }
             }
         }
