@@ -3,8 +3,4 @@
   command: aws s3 sync "{{ application_path }}/{{ output_folder.name }}/{{ output_folder.source }}" "s3://{{ s3_bucket_name }}" --delete
 
 - name: create a batch of invalidations using a distribution_id for a reference
-  cloudfront_invalidation:
-    distribution_id: "{{ cloudfront_distribution_id }}"
-    region: "us-east-1"
-    target_paths:
-      - '/*'
+  command: aws cloudfront create-invalidation --distribution-id "{{ cloudfront_distribution_id }}" --paths '/*' --region "us-east-1"
