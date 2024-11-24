@@ -1,0 +1,7 @@
+---
+- include_tasks: common.yaml
+- include_tasks: build-command.yaml
+  when: build_docker == false
+- include_tasks: build-docker.yaml
+  when: build_docker == true
+- include_tasks: deploy.yaml

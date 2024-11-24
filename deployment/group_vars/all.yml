@@ -1,0 +1,18 @@
+---
+## Require variables
+env: "prod"
+s3_bucket_name: ""
+cloudfront_distribution_id: ""
+application_name: "docs-frontend"
+parameter: ""
+
+## Optional variables
+application_path: "{{ playbook_dir }}"
+image_location: "local"
+image_full_name: "{{ image_location }}/{{application_name}}-{{env}}-service"
+output_folder:
+  name: ".output"
+  source: "public"
+build_docker: true
+aws_region: "eu-central-1"
+docker_target: "build"

@@ -1,0 +1,18 @@
+---
+## Require variables
+s3_bucket_name: "tts-openai-prod-docs-frontend-bucket"
+cloudfront_distribution_id: "E39GSBXF5DAFXZ"
+application_name: "docs-frontend"
+parameter: "cdk-tts-openai-docs-frontend-prod"
+
+## Optional variables
+application_path: "{{ playbook_dir }}"
+env: "prod"
+image_location: "local"
+image_full_name: "{{ image_location }}/{{application_name}}-{{env}}-service"
+output_folder:
+  name: ".output"
+  source: "public"
+build_docker: true
+aws_region: "eu-central-1"
+docker_target: "build"
