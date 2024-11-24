@@ -126,7 +126,7 @@ pipeline {
                         sh 'aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID'
                         sh 'aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY'
                         sh "cp deployment/group_vars/${env.ENV_CODE}.yml deployment/group_vars/all.yml"
-                        sh "ansible-playbook --connection=local --inventory 127.0.0.1, deployment/playbook.yml --extra-vars application_path=${env.WORKSPACE}"
+                        sh "ansible-playbook --connection=local --inventory 127.0.0.1, deployment/playbook.yml --extra-vars application_path=${env.WORKSPACE} -v"
                     }
                 }
             }
