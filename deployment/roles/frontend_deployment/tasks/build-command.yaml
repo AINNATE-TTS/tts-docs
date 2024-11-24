@@ -1,0 +1,8 @@
+- name: Install npm dependencies
+  command: npm install
+
+- name: Install pnpm dependencies
+  command: pnpm install
+
+- name: Run pnpm generate
+  command: pnpm run generate

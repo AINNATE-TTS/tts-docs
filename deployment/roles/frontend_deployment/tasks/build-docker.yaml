@@ -1,0 +1,38 @@
+---
+- block:
+  - name: Get the short commit hash
+    command: git rev-parse --short=7 HEAD
+    register: commit_hash
+  - set_fact:
+      IMAGE_TAG: "{{ commit_hash.stdout }}"
+
+  - name: Build image
+    community.docker.docker_image_build:
+      name: "{{ image_full_name }}"
+      path: "{{ application_path }}"
+      target: "{{ docker_target }}"
+      tag: "{{ IMAGE_TAG }}-{{ env}}"
+
+  - name: Create docker container
+    command: docker create {{ image_full_name }}:{{ IMAGE_TAG }}-{{ env}}
+    register: container_id
+
+  - name: Delete .output folder before copying new build artifact
+    ansible.builtin.file:
+      state: absent
+      path: "{{ application_path }}/{{ output_folder.name }}"
+    ignore_errors: yes
+
+  - name: Copy the build artifact
+    shell: "docker cp {{ container_id.stdout }}:/src/{{ output_folder.name }}/ ."
+    args:
+      executable: /bin/bash
+      chdir: "{{ application_path }}"
+  always:
+    - name: Remove the docker container after copying the build artifact
+      command: docker rm {{ container_id.stdout }}
+      when: container_id.changed
+
+    - name: Remove an docker image
+      command: docker rmi -f {{ image_full_name }}:{{ IMAGE_TAG }}-{{ env}} 
+      when: container_id.changed

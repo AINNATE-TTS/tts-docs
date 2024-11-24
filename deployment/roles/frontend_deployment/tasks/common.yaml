@@ -1,0 +1,6 @@
+---
+- name: generate .env from SSM parameter store
+  shell: aws ssm get-parameter --with-decryption --name {{ parameter }} --region {{ aws_region }} --query Parameter.Value --output text --no-cli-pager > .env
+  args:
+    executable: /bin/bash
+    chdir: "{{ application_path }}"
