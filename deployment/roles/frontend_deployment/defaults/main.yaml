@@ -1,0 +1,15 @@
+---
+## Require variables
+s3_bucket_name: ""
+cloudfront_distribution_id: ""
+application_name: "fe-test"
+
+## Optional variables
+application_path: "{{ playbook_dir }}"
+env: "dev"
+image_location: "local"
+image_full_name: "{{ image_location }}/{{application_name}}-{{env}}-service"
+output_folder_name: ".output"
+build_docker: false
+aws_region: "eu-central-1"
+docker_target: "build"

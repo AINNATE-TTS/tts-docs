@@ -1,68 +1,70 @@
-title: 'Nuxt UI Pro - Docs template'
-description: Nuxt UI Pro is a collection of premium Vue components built on top of Nuxt UI to create beautiful & responsive Nuxt applications in minutes.
+title: 'Text To Speech OpenAI API'
+description: Build a Text To Speech app with TTS OpenAI API.
 navigation: false
 hero:
-  title: 'Build your docs in seconds'
-  description: 'Create your documentation in seconds with this template!'
+  title: 'Build your Text To Speech App in seconds'
+  description: 'Use the TTSOpenAI API to generate human-like speech from text.'
   orientation: horizontal
-  headline:
-    label: Made with Nuxt UI Pro
-    to: https://ui.nuxt.com/pro
-    icon: i-heroicons-arrow-top-right-on-square-20-solid
   links:
     - label: Get started
       icon: i-heroicons-arrow-right-20-solid
       trailing: true
       to: '/getting-started'
       size: lg
-    - label: Use this template
-      icon: i-simple-icons-github
+    - label: Try our service
+      icon: i-mingcute-voice-line
       size: lg
       color: gray
-      to: https://github.com/nuxt-ui-pro/docs
+      to: https://ttsopenai.com/
       target: _blank
   code: |
-    ```bash [Terminal]
-    npx nuxi init -t github:nuxt-ui-pro/docs
+    ```bash [terminal]
+    curl -X POST https://api.ttsopenai.com/uapi/v1/text-to-speech \
+      -H "Content-Type: application/json" \
+      -H "x-api-key: <your api key>" \
+      -d '{ \
+            "model":"tts-1", \
+            "voice_id":"OA001", \
+            "speed": 1, \
+            "input": "Hello world!" \
+          }'
     ```
 features:
-  title: 'All-in-one docs template'
+  title: 'A powerful Text To Speech API'
   links:
-    - label: 'Explore Nuxt UI Pro'
-      icon: 'i-simple-icons-nuxtdotjs'
+    - label: 'Explore Text To Speech Service'
+      icon: 'i-mingcute-voice-line'
       trailingIcon: 'i-heroicons-arrow-right-20-solid'
       color: 'gray'
-      to: 'https://ui.nuxt.com/pro'
+      to: 'https://ttsopenai.com/'
       target: '_blank'
       size: lg
   items:
-    - title: 'Nuxt 3'
-      description: 'Powered by Nuxt 3 for optimal performances and SEO.'
-      icon: 'i-simple-icons-nuxtdotjs'
-      to: 'https://nuxt.com'
+    - title: 'Text'
+      description: 'Convert text to speech.'
+      icon: 'i-ion-language'
+      to: '/resources/tts-text'
       target: '_blank'
-    - title: 'Markdown'
-      description: 'Write your pages with MDC thanks to Nuxt Content.'
-      icon: 'i-simple-icons-markdown'
-      to: 'https://content.nuxt.com'
+    - title: 'Document'
+      description: 'Convert document to speech.'
+      icon: 'i-gg-file-document'
+      to: '/resources/tts-document'
       target: '_blank'
-    - title: 'Nuxt UI'
-      description: 'Offers a very large set of full customizable components.'
-      icon: 'i-heroicons-sparkles-20-solid'
-      to: 'https://ui.nuxt.com'
+    - title: 'Story Maker'
+      description: 'Create a story with multiple voices.'
+      icon: 'i-fluent-people-chat-16-regular'
+      to: '/resources/tts-story'
       target: '_blank'
-    - title: 'TypeScript'
-      description: 'A fully typed development experience.'
-      icon: 'i-simple-icons-typescript'
-      to: 'https://www.typescriptlang.org'
+    - title: 'Secure'
+      description: 'Secure your API with API Key.'
+      icon: 'i-iconoir-secure-window'
+      to: '/getting-started/authentication'
       target: '_blank'
-    - title: 'Nuxt Studio'
-      description: 'Supported by Nuxt Studio for fast updates and previews.'
-      icon: 'i-simple-icons-nuxtdotjs'
-      to: 'https://nuxt.studio'
+    - title: 'Webhook'
+      description: 'Receive the result via webhook.'
+      icon: 'i-ic-baseline-webhook'
+      to: '/getting-started/webhooks'
       target: '_blank'
-    - title: 'Search'
-      description: 'A full-text search modal empowered by Fuse.js.'
-      icon: 'i-heroicons-magnifying-glass-20-solid'
-      to: 'https://ui.nuxt.com/pro/components/docs/docs-search'
-      target: '_blank'
+    - title: 'Languages'
+      description: 'Support multiple languages.'
+      icon: 'i-material-symbols-language'

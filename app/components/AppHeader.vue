@@ -4,22 +4,32 @@ import type { NavItem } from "@nuxt/content";
 const navigation = inject<NavItem[]>("navigation", []);
 
 const { header } = useAppConfig();
+const staticLogo = ref(false);
+onMounted(() => {
+  if (process.client) {
+    setTimeout(() => {
+      staticLogo.value = !staticLogo.value;
+    }, 3000);
+  }
+});
 </script>
 
 <template>
-  <UHeader>
+  <UHeader @mouseenter="staticLogo = false" @mouseleave="staticLogo = true">
     <template #logo>
       <template v-if="header?.logo?.dark || header?.logo?.light">
         <UColorModeImage v-bind="{ class: 'h-6 w-auto', ...header?.logo }" />
       </template>
       <template v-else>
-        <div class="inline-flex items-center gap-2">
+        <div class="flex flex-row items-center gap-2">
           <BaseSoundWave
-            :static="true"
+            :static="staticLogo"
             class="cursor-pointer"
             @click="navigateTo('/docs/api-reference/getting-started')"
           />
-          Text To Speech OpenAI <UBadge label="Docs" variant="subtle" class="mb-0.5" />
+          <span class="block md:hidden">TTSOpenAI</span>
+          <span class="hidden md:block">Text To Speech OpenAI</span>
+          <UBadge label="Docs" variant="subtle" />
         </div>
       </template>
     </template>

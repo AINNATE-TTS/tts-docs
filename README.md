@@ -1,127 +1,39 @@
-![nuxt-ui-docs-social-card](https://github.com/nuxt-ui-pro/docs/assets/739984/f64e13d9-9ae0-4e03-bf7f-6be4c36cd9ba)
+---
+title: Introduction
+description: Welcome to the Text-to-Speech (TTS) API, your tool for turning text, documents, and subtitles into lifelike speech.
+---
 
-# Nuxt UI Pro - Docs template
+The Text To Speech OpenAI API is a robust and easy-to-use service designed to convert written content into high-quality, natural-sounding speech. This API caters to a wide range of use cases, such as creating voiceovers for multimedia content, generating narrations for e-books and documents, or turning subtitles into engaging audio experiences.
 
-[![Nuxt UI Pro](https://img.shields.io/badge/Made%20with-Nuxt%20UI%20Pro-00DC82?logo=nuxt.js&labelColor=020420)](https://ui.nuxt.com/pro)
-[![Nuxt Studio](https://img.shields.io/badge/Open%20in%20Nuxt%20Studio-18181B?&logo=nuxt.js&logoColor=3BB5EC)](https://nuxt.studio/themes/docs)
+## Features
 
-- [Live demo](https://docs-template.nuxt.dev/)
-- [Play on Stackblitz](https://stackblitz.com/github/nuxt-ui-pro/docs)
-- [Documentation](https://ui.nuxt.com/pro/getting-started)
-- [Clone on Nuxt Studio](https://nuxt.studio/templates/docs)
+- **Multi-Language Support** - Generate speech in various languages with diverse voice options, including male and female tones.
+- **Customizable Audio Settings** - Adjust speech speed, pitch, and output formats to match your needs.
+- **Document and Subtitle Handling** - Seamlessly convert .txt, .docx, .pdf, or .srt files into audio.
+- **Storytelling Capabilities** - Transform text or subtitle files into captivating narrated stories.
 
-[![Deploy to NuxtHub](https://hub.nuxt.com/button.svg)](https://hub.nuxt.com/new?repo=nuxt-ui-pro/docs)
+With simple integration and high scalability, the TTS OpenAI API is the ideal solution for developers and businesses seeking to enhance accessibility, automate voice creation, or elevate user experiences.
 
-## Quick Start
+## Check our services
 
-```bash [Terminal]
-npx nuxi init -t github:nuxt-ui-pro/docs
-```
+You can try 
 
-## Setup
+::u-button
+---
+class: mr-4
+icon: 'i-ion-language'
+label: Try with Text
+target: _blank
+to: https://ttsopenai.com/
+---
+::
 
-Make sure to install the dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-
-## Nuxt Studio integration
-
-Add `@nuxthq/studio` dependency to your package.json:
-
-```bash
-# npm
-npm install --save-dev @nuxthq/studio
-
-# pnpm
-pnpm add -D @nuxthq/studio
-
-# yarn
-yarn add -D @nuxthq/studio
-
-# bun
-bun add -d @nuxthq/studio
-```
-
-Add this module to your `nuxt.config.ts`:
-
-```ts
-export default defineNuxtConfig({
-  ...
-  modules: [
-    ...
-    '@nuxthq/studio'
-  ]
-})
-```
-
-Read more on [Nuxt Studio docs](https://nuxt.studio/docs/get-started/setup).
-
-## Renovate integration
-
-Install [Renovate GitHub app](https://github.com/apps/renovate/installations/select_target) on your repository and you are good to go.
+::u-button
+---
+class: mt-2 sm:mt-0
+icon: 'i-gg-file-document'
+label: Try with document
+target: _blank
+to: https://ttsopenai.com/documents
+---
+::
