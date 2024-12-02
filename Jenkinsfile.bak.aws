@@ -1,6 +1,6 @@
 def getEnvCode(def _git_branch){
     if (_git_branch == "develop") {
-        env_code = "dev"
+        env_code = "prod"
     }
     else if (_git_branch == "main") {
         env_code = "prod"
@@ -18,9 +18,9 @@ pipeline {
     environment {
         SERVICE_NAME    = 'frontend-docs-service'
         currentVersion  = "v1.0"
-        PROJECT_NAME  = "ttsopenai"
-        PAGES_PROJECT_NAME = "frontend-docs-tts"
-        SHORT_COMMIT = "${GIT_COMMIT[0..7]}"
+        PROJECT_NAME    = "ttsopenai"
+        PROFILE_NAME    = "frontend-docs-tts"
+        SHORT_COMMIT    = "${GIT_COMMIT[0..7]}"
     }
     parameters {
         string(name: 'SLEEP_TIME_IN_SECONDS', defaultValue: '10', description: 'The waiting time to Sonar server perform analysis')
@@ -96,16 +96,10 @@ pipeline {
             }
             steps {
                 configFileProvider([
-                    configFile(fileId: "${PAGES_PROJECT_NAME}-${ENV_CODE}-profile", 
+                    configFile(fileId: "${PROFILE_NAME}-${ENV_CODE}-profile", 
                     targetLocation: './.env')
                 ]) { 
                     sh 'cat ./.env'
-                }
-                configFileProvider([
-                    configFile(fileId: "cloudflare-pages-tts-${ENV_CODE}-profile", 
-                    targetLocation: './.cloudflare-pages.credentials')
-                ]) {
-                    sh 'cat ./.cloudflare-pages.credentials'
                 }
                 echo "Update Frontend Docs TTS Service Profiles Done!!!!"
             }
@@ -122,17 +116,19 @@ pipeline {
                 }
             }
             steps {
-                script {
-                    env.ENV_CODE = getEnvCode(env.BRANCH_NAME)
-                    def now = new Date()
-                    def dateTag = now.format("yyyy_MM_dd_HHmmss")
-                    env.IMAGE_TAG = "${SHORT_COMMIT}_${env.BRANCH_NAME}_${dateTag}"
-                    load './.cloudflare-pages.credentials'
-                    sh "docker buildx build --target build -t local/${PAGES_PROJECT_NAME}-${ENV_CODE}-service:${IMAGE_TAG} -f Dockerfile ."
-	                sh "docker run --rm -e CLOUDFLARE_ACCOUNT_ID=${env.CLOUDFLARE_ACCOUNT_ID} -e CLOUDFLARE_API_TOKEN=${env.CLOUDFLARE_API_TOKEN} local/${PAGES_PROJECT_NAME}-${ENV_CODE}-service:${IMAGE_TAG} wrangler pages deploy dist --project-name=${PAGES_PROJECT_NAME}-${ENV_CODE}"
-                    sh "docker rmi local/${PAGES_PROJECT_NAME}-${ENV_CODE}-service:${IMAGE_TAG}"
+                withCredentials([[
+                $class: 'AmazonWebServicesCredentialsBinding',
+                accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+                credentialsId: 'cicd-deployment']]) {
+                    script {
+                        env.ENV_CODE = getEnvCode(env.BRANCH_NAME)
+                        sh 'aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID'
+                        sh 'aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY'
+                        sh "cp deployment/group_vars/${env.ENV_CODE}.yml deployment/group_vars/all.yml"
+                        sh "ansible-playbook --connection=local --inventory 127.0.0.1, deployment/playbook.yml --extra-vars application_path=${env.WORKSPACE} -v"
+                    }
                 }
-                echo "Image tag: ${env.IMAGE_TAG}"
             }
         }
     }
