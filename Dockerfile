@@ -11,10 +11,13 @@ WORKDIR /src
 # Build
 FROM base as build
 
+ENV NODE_OPTIONS=--max-old-space-size=7168
+
 RUN npm install -g pnpm wrangler
 COPY --link package.json pnpm-lock.yaml ./
-RUN npm install \
-  && pnpm install
+COPY .npmrc ./
+
+RUN pnpm install
 
 COPY --link . .
 
