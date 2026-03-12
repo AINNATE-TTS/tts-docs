@@ -3,7 +3,7 @@ title: Introduction
 description: Welcome to the Text-to-Speech (TTS) API, your tool for turning text, documents, and subtitles into lifelike speech.
 ---
 
-The Text To Speech OpenAI API is a robust and easy-to-use service designed to convert written content into high-quality, natural-sounding speech. This API caters to a wide range of use cases, such as creating voiceovers for multimedia content, generating narrations for e-books and documents, or turning subtitles into engaging audio experiences.
+The Text To Speech Ainnate API is a robust and easy-to-use service designed to convert written content into high-quality, natural-sounding speech. This API caters to a wide range of use cases, such as creating voiceovers for multimedia content, generating narrations for e-books and documents, or turning subtitles into engaging audio experiences.
 
 ## Features
 
@@ -12,7 +12,7 @@ The Text To Speech OpenAI API is a robust and easy-to-use service designed to co
 - **Document and Subtitle Handling** - Seamlessly convert .txt, .docx, .pdf, or .srt files into audio.
 - **Storytelling Capabilities** - Transform text or subtitle files into captivating narrated stories.
 
-With simple integration and high scalability, the TTS OpenAI API is the ideal solution for developers and businesses seeking to enhance accessibility, automate voice creation, or elevate user experiences.
+With simple integration and high scalability, the TTS Ainnate API is the ideal solution for developers and businesses seeking to enhance accessibility, automate voice creation, or elevate user experiences.
 
 ## Check our services
 

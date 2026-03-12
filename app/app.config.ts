@@ -10,7 +10,7 @@ export default defineAppConfig({
     },
   },
   seo: {
-    siteName: "Text To Speech OpenAI API",
+    siteName: "Text To Speech Ainnate API",
   },
   header: {
     logo: {

@@ -28,7 +28,7 @@ onMounted(() => {
             @click="navigateTo('/docs/api-reference/getting-started')"
           />
           <span class="block md:hidden">TTSOpenAI</span>
-          <span class="hidden md:block">Text To Speech OpenAI</span>
+          <span class="hidden md:block">Text To Speech Ainnate</span>
           <UBadge label="Docs" variant="subtle" />
         </div>
       </template>
