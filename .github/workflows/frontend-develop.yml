@@ -1,0 +1,27 @@
+name: CI/CD Develop Frontend-Docs
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  call-ci-cd:
+    name: CI/CD Develop Frontend
+    uses: ./.github/workflows/ci-cd.yml
+    with:
+      project: "ttsopenai"
+      service_name: "docs"
+      env_code: "dev"
+      environment: "Develop"
+      git_branch: "develop"
+      aws_role_arn: ${{ vars.AWS_ROLE_ARN }}
+      aws_region: ${{ vars.AWS_REGION }}
+      slack_mentions: ${{ vars.SLACK_MENTIONS }}
+      slack_webhook_url: ${{ vars.SLACK_WEBHOOK_URL }}
+    secrets: inherit
