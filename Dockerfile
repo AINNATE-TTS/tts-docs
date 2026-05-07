@@ -29,4 +29,8 @@ FROM base
 ENV PORT=$PORT
 ENV NODE_ENV=production
 
-COPY --from=build /src/.output ./
+RUN npm install -g wrangler
+
+COPY --from=build /src/.output ./.output
+COPY --from=build /src/deploy.sh ./deploy.sh
+RUN chmod +x ./deploy.sh
