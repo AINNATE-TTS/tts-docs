@@ -104,7 +104,7 @@ jobs:
             -e CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN \
             -e CLOUDFLARE_ZONE_ID=$CLOUDFLARE_ZONE_ID \
             local/${PAGES_PROJECT_NAME}-service:latest \
-            ./deploy.sh ${PAGES_PROJECT_NAME} ${ENV_CODE}
+            bash ./deploy.sh ${PAGES_PROJECT_NAME} ${ENV_CODE}
         env:
           PAGES_PROJECT_NAME: frontend-${{ inputs.service_name }}-tts-${{ env.ENV_CODE }}
       # Notify success
