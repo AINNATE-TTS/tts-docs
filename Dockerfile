@@ -13,7 +13,7 @@ FROM base AS build
 
 ENV NODE_OPTIONS=--max-old-space-size=7168
 
-RUN npm install -g pnpm wrangler
+RUN npm install -g pnpm
 COPY --link package.json pnpm-lock.yaml ./
 COPY .npmrc ./
 
@@ -24,15 +24,13 @@ COPY --link . .
 RUN pnpm run generate
 
 # Run
-FROM base
+FROM build AS run
 
 ENV PORT=$PORT
 ENV NODE_ENV=production
 
-RUN apt-get update && apt-get install -y curl --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y curl
+RUN npm install -g wrangler@3.111.0
 
-RUN npm install -g wrangler
-
-COPY --from=build /src/.output ./.output
 COPY --from=build /src/deploy.sh ./deploy.sh
-RUN chmod +x ./deploy.sh
+COPY --from=build /src/.output ./.output
