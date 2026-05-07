@@ -29,6 +29,8 @@ FROM base
 ENV PORT=$PORT
 ENV NODE_ENV=production
 
+RUN apt-get update && apt-get install -y curl --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
 RUN npm install -g wrangler
 
 COPY --from=build /src/.output ./.output
