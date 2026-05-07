@@ -1,15 +1,15 @@
-ARG NODE_VERSION=20.16.0
+ARG NODE_VERSION=22.15.0
 ARG CLOUDFLARE_ACCOUNT_ID=1234567890
 ARG CLOUDFLARE_API_TOKEN=secret-api-token
 
-FROM node:${NODE_VERSION}-slim as base
+FROM node:${NODE_VERSION}-slim AS base
 
 ARG PORT=3000
 
 WORKDIR /src
 
 # Build
-FROM base as build
+FROM base AS build
 
 ENV NODE_OPTIONS=--max-old-space-size=7168
 
