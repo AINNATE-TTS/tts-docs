@@ -1,0 +1,130 @@
+name: Reusable CI/CD Workflow
+
+on:
+  workflow_call:
+    inputs:
+      project:
+        description: "Name of the project"
+        required: true
+        type: string
+      service_name:
+        description: "Name of the service"
+        required: true
+        type: string
+      env_code:
+        description: "Environment code (dev, stg, prod)"
+        required: true
+        type: string
+      environment:
+        description: "Environment name (Develop, Staging, Production)"
+        required: true
+        type: string
+      git_branch:
+        description: "Branch name (develop, main, …)"
+        required: true
+        type: string
+      aws_role_arn:
+        description: "AWS Role ARN for OIDC"
+        required: true
+        type: string
+      aws_region:
+        description: "AWS Region (e.g., eu-central-1, us-east-1)"
+        required: true
+        type: string
+      slack_mentions:
+        description: "Slack mentions for failure notifications"
+        required: false
+        type: string
+      slack_webhook_url:
+        description: "Slack Webhook URL for notifications"
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build & Deploy ${{ inputs.service_name }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    permissions:
+      id-token: write
+      contents: read
+
+    concurrency:
+      group: ${{ inputs.service_name }}-${{ inputs.env_code }}-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      ENV_CODE: ${{ inputs.env_code }}
+      AWS_REGION: ${{ inputs.aws_region }}
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ inputs.aws_role_arn }}
+          aws-region: ${{ inputs.aws_region }}
+
+      # 👉 Load env file from SSM
+      - name: Setup File Environment (.env from SSM)
+        run: |
+          aws ssm get-parameter \
+            --name "/tts/${{ env.ENV_CODE }}/${{ inputs.service_name }}/config/env-file" \
+            --with-decryption \
+            --region $AWS_REGION \
+            --query "Parameter.Value" \
+            --output text > .env
+          echo "✅ .env file loaded from SSM"
+
+      # 👉 Fetch Cloudflare credentials from AWS Secrets Manager
+      - name: Fetch Cloudflare credentials from Secrets Manager
+        id: cf-creds
+        run: |
+          SECRET_VALUE=$(aws secretsmanager get-secret-value \
+            --secret-id "geminigen-cloudflare-pages/credentials" \
+            --region $AWS_REGION \
+            --query SecretString \
+            --output text)
+          echo "$SECRET_VALUE" > cf_secret.json
+          CLOUDFLARE_ACCOUNT_ID=$(jq -r '.accountid' cf_secret.json)
+          CLOUDFLARE_API_TOKEN=$(jq -r '.apitoken' cf_secret.json)
+          CLOUDFLARE_ZONE_ID=$(jq -r '.zoneid' cf_secret.json)
+          echo "CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID" >> $GITHUB_ENV
+          echo "CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN" >> $GITHUB_ENV
+          echo "CLOUDFLARE_ZONE_ID=$CLOUDFLARE_ZONE_ID" >> $GITHUB_ENV
+          rm -f cf_secret.json
+
+      - name: Deploy to Cloudflare Pages (via Wrangler docker run)
+        run: |
+          docker buildx build -t local/${PAGES_PROJECT_NAME}-service:latest -f Dockerfile .
+          docker run --rm \
+            -e CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID \
+            -e CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN \
+            -e CLOUDFLARE_ZONE_ID=$CLOUDFLARE_ZONE_ID \
+            local/${PAGES_PROJECT_NAME}-service:latest \
+            ./deploy.sh ${PAGES_PROJECT_NAME} ${ENV_CODE}
+        env:
+          PAGES_PROJECT_NAME: ${{ inputs.project }}-${{ inputs.service_name }}-${{ env.ENV_CODE }}
+
+      # Notify success
+      - name: Notify Slack (Success)
+        if: ${{ success() }}
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,commit,author,ref,workflow,pullRequest
+        env:
+          SLACK_WEBHOOK_URL: ${{ inputs.slack_webhook_url }}
+
+      # Notify fail + mention user
+      - name: Notify Slack (Fail)
+        if: ${{ failure() }}
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,commit,author,ref,workflow,pullRequest
+          text: "❌ Build failed! ${{ inputs.slack_mentions }} please check 🚨"
+        env:
+          SLACK_WEBHOOK_URL: ${{ inputs.slack_webhook_url }}
