@@ -106,8 +106,7 @@ jobs:
             local/${PAGES_PROJECT_NAME}-service:latest \
             ./deploy.sh ${PAGES_PROJECT_NAME} ${ENV_CODE}
         env:
-          PAGES_PROJECT_NAME: ${{ inputs.project }}-${{ inputs.service_name }}-${{ env.ENV_CODE }}
-
+          PAGES_PROJECT_NAME: frontend-${{ inputs.service_name }}-tts-${{ env.ENV_CODE }}
       # Notify success
       - name: Notify Slack (Success)
         if: ${{ success() }}
